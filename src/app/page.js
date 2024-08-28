@@ -2,7 +2,6 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { firestore } from "/firebase";
-//import { Firestore } from "firebase/firestore";
 import {
   Box,
   Stack,
@@ -10,6 +9,9 @@ import {
   Button,
   Modal,
   TextField,
+  IconButton,
+  Grid,
+  useTheme
 } from "@mui/material";
 import {
   collection,
@@ -18,8 +20,37 @@ import {
   getDocs,
   getDoc,
   query,
-  setDoc,
+  setDoc
 } from "firebase/firestore";
+import Brightness4 from "@mui/icons-material/Brightness4";
+import Brightness7 from "@mui/icons-material/Brightness7";
+import AddCircleOutline from "@mui/icons-material/AddCircleOutline";
+import RemoveCircleOutline from "@mui/icons-material/RemoveCircleOutline";
+import {
+  Bed,
+  Fastfood,
+  FitnessCenter,
+  Kitchen,
+  Laptop,
+  Medicine,
+  Office,
+  Pets,
+  School,
+} from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
+
+const itemIcons = {
+  blankets: Bed,
+  food: Fastfood,
+  fitness: FitnessCenter,
+  kitchenware: Kitchen,
+  electronics: Laptop,
+  pet: Pets,
+  school: School,
+  // Add more mappings as needed
+};
+
+const defaultIcon = "/assets/bamboo.png"; // Fallback image for unknown items
 
 const style = {
   position: "absolute",
@@ -27,19 +58,22 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: "white",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
+  bgcolor: "background.paper",
+  borderRadius: 2,
+  boxShadow: 3,
+  p: 3,
   display: "flex",
   flexDirection: "column",
-  gap: 3,
+  gap: 2,
 };
 
 export default function Home() {
   const [inventory, setInventory] = useState([]);
   const [open, setOpen] = useState(false);
   const [itemName, setItemName] = useState("");
+  const [darkMode, setDarkMode] = useState(false);
+
+  const theme = useTheme(); // Get the current theme
 
   const updateInventory = async () => {
     const snapshot = query(collection(firestore, "inventory"));
@@ -91,23 +125,91 @@ export default function Home() {
     <Box
       width="100vw"
       height="100vh"
-      display={"flex"}
-      justifyContent={"center"}
-      flexDirection={"column"}
-      alignItems={"center"}
-      gap={2}
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      sx={{
+        position: 'relative',
+        backgroundColor: darkMode ? "#121212" : "#f5f5f5",
+        backgroundImage: darkMode 
+          ? `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/assets/bgi.jpg')` 
+          : `linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url('/assets/bg.jpg')`,
+        backgroundSize: 'contain',
+        backgroundRepeat: 'repeat',
+      }}
     >
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+      {/* Header */}
+      <Box
+        width="100%"
+        padding={2}
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{
+          backgroundColor: darkMode ? "#1e1e1e" : "#ffffff",
+          boxShadow: 2,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
       >
+        <Box display="flex" alignItems="center">
+          <Image src="/assets/panda.png" alt="PandaStock Logo" width={75} height={70} />
+          <Typography variant="h4" ml={2} color={darkMode ? "#ffffff" : "#000000"}>
+            PandaStock
+          </Typography>
+        </Box>
+        {/* Dark/Light Mode Toggle */}
+        <IconButton
+          onClick={() => setDarkMode(!darkMode)}
+          sx={{
+            color: darkMode ? '#fff' : '#000',
+          }}
+        >
+          {darkMode ? <Brightness7 /> : <Brightness4 />}
+        </IconButton>
+      </Box>
+
+      {/* About Section */}
+      <Box
+        width="80%"
+        maxWidth="900px"
+        mt={4}
+        mb={8}
+        p={3}
+        borderRadius={1}
+        textAlign="center"
+        
+      >
+        {/* Title */}
+        <Typography
+          variant="body"
+          fontSize="3rem"
+          fontWeight={500}
+          color={darkMode ? "#ffffff" : "#000000"}
+          display="block"   // Ensures it starts on a new line
+          gutterBottom      // Adds bottom margin for spacing
+        >
+          Welcome to PandaStock!
+        </Typography>
+        
+        {/* Description */}
+        <Typography
+          variant="body"
+          fontSize="1.3rem"
+          color={darkMode ? "#ffffff" : "#000000"}
+          display="block"   // Ensures it starts on a new line
+        >
+          PandaStock is a panda-themed inventory management system built with Next.js, Material-UI, and Firebase. Our platform allows you to manage your inventory with ease and efficiency, providing a user-friendly experience with a touch of panda charm. Whether you’re managing your supplies or keeping track of your stock, PandaStock is here to help!
+        </Typography>
+      </Box>
+
+      {/* Modal for Adding Items */}
+      <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
+          <Typography id="modal-modal-title" variant="h6" color={darkMode ? "#ffffff" : "#000000"}>
             Add Item
           </Typography>
-          <Stack width="100%" direction={"row"} spacing={2}>
+          <Stack direction="row" spacing={2} width="100%">
             <TextField
               id="outlined-basic"
               label="Item"
@@ -115,9 +217,12 @@ export default function Home() {
               fullWidth
               value={itemName}
               onChange={(e) => setItemName(e.target.value)}
+              InputProps={{ style: { color: darkMode ? "#ffffff" : "#000000" } }}
+              InputLabelProps={{ style: { color: darkMode ? "#ffffff" : "#000000" } }}
             />
             <Button
-              variant="outlined"
+              variant="contained"
+              color="primary"
               onClick={() => {
                 addItem(itemName);
                 setItemName("");
@@ -129,51 +234,104 @@ export default function Home() {
           </Stack>
         </Box>
       </Modal>
-      <Button variant="contained" onClick={handleOpen}>
-        Add New Item
+
+      {/* Add New Item Button */}
+      <Button
+        variant="contained"
+        sx={{
+          width: 80,
+          height: 80,
+          borderRadius: '50%',
+          backgroundColor: darkMode ? '#ffffff' : '#000000',
+          color: darkMode ? '#000000' : '#ffffff',
+          boxShadow: 3,
+          position: 'fixed',
+          bottom: 30,
+          right: 30,
+          '&:hover': {
+            backgroundColor: darkMode ? '#ddd' : '#333',
+          },
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        onClick={handleOpen}
+      >
+        <AddIcon />
       </Button>
-      <Box border={"1px solid #333"}>
-        <Box
-          width="800px"
-          height="100px"
-          bgcolor={"#ADD8E6"}
-          display={"flex"}
-          justifyContent={"center"}
-          alignItems={"center"}
-        >
-          <Typography variant={"h2"} color={"#333"} textAlign={"center"}>
-            Inventory Items
-          </Typography>
-        </Box>
-        <Stack width="800px" height="300px" spacing={2} overflow={"auto"}>
-          {inventory.map(({ name, quantity }) => (
-            <Box
-              key={name}
-              width="100%"
-              minHeight="150px"
-              display={"flex"}
-              justifyContent={"space-between"}
-              alignItems={"center"}
-              bgcolor={"#f0f0f0"}
-              paddingX={5}
-            >
-              <Typography variant={"h3"} color={"#333"} textAlign={"center"}>
-                {name.charAt(0).toUpperCase() + name.slice(1)}
-              </Typography>
-              <Typography variant={"h3"} color={"#333"} textAlign={"center"}>
-                Quantity: {quantity}
-              </Typography>
-              <Stack direction="row" spacing={2}>
-                <Button variant="contained" onClick={() => addItem(name)}>
-                  Add
-                </Button>
-                <Button variant="contained" onClick={() => removeItem(name)}>
-                  Remove
-                </Button>
-              </Stack>
-            </Box>
-          ))}
-        </Stack>
+
+      {/* Inventory Items */}
+      <Box width="80%" maxWidth="1200px" mt={4}>
+        <Typography variant="h2" align="center" mb={4} color={darkMode ? "#ffffff" : "#000000"}>
+          Bamboo Stalks
+        </Typography>
+        <Grid container spacing={4} justifyContent="center">
+          {inventory.map(({ name, quantity }) => {
+            // Determine icon to use
+            const Icon = itemIcons[name.toLowerCase()] || defaultIcon;
+            const isPNG = typeof Icon === "string"; // Check if the icon is a PNG
+
+            return (
+              <Grid item xs={2.4} key={name}>
+                <Box
+                  sx={{
+                    width: '100%',
+                    maxWidth: 250,
+                    height: 250,
+                    p: 2,
+                    borderRadius: 2,
+                    bgcolor: darkMode ? "#333333" : "#ffffff",
+                    boxShadow: 3,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: "1px solid",
+                    borderColor: darkMode ? "#444444" : "#dddddd",
+                    textAlign: "center",
+                  }}
+                >
+                  {/* Item Icon */}
+                  <Box sx={{ mb: 2 }}>
+                    {isPNG ? (
+                      <Image
+                        src={Icon}
+                        alt={`${name} icon`}
+                        width={80}
+                        height={80}
+                        style={{
+                          filter: darkMode ? "invert(1) brightness(2)" : "none",
+                        }}
+                      />
+                    ) : (
+                      <Icon sx={{ fontSize: 60, color: darkMode ? "#ffffff" : "#000000" }} />
+                    )}
+                  </Box>
+                  <Typography variant="h6" mt={2} color={darkMode ? "#ffffff" : "#000000"}>
+                    {name.charAt(0).toUpperCase() + name.slice(1)}
+                  </Typography>
+                  <Typography variant="body1" color={darkMode ? "#cccccc" : "#555555"}>
+                    Quantity: {quantity}
+                  </Typography>
+                  <Stack direction="row" spacing={2} mt={2}>
+                    <IconButton
+                      onClick={() => addItem(name)}
+                      sx={{ color: darkMode ? "#ffffff" : "#000000" }}
+                    >
+                      <AddCircleOutline />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => removeItem(name)}
+                      sx={{ color: darkMode ? "#ffffff" : "#000000" }}
+                    >
+                      <RemoveCircleOutline />
+                    </IconButton>
+                  </Stack>
+                </Box>
+              </Grid>
+            );
+          })}
+        </Grid>
       </Box>
     </Box>
   );
