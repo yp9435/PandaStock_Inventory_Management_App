@@ -154,7 +154,7 @@ export default function Home() {
       >
         <Box display="flex" alignItems="center">
           <Image src="/assets/panda.png" alt="PandaStock Logo" width={75} height={70} />
-          <Typography variant="h4" ml={2} color={darkMode ? "#ffffff" : "#000000"}>
+          <Typography variant="body" fontSize="2.5rem" fontWeight={600} ml={2} color={darkMode ? "#ffffff" : "#000000"}>
             PandaStock
           </Typography>
         </Box>
@@ -261,8 +261,14 @@ export default function Home() {
       </Button>
 
       {/* Inventory Items */}
-      <Box width="80%" maxWidth="1200px" mt={4}>
-        <Typography variant="h2" align="center" mb={4} color={darkMode ? "#ffffff" : "#000000"}>
+      <Box width="80%" maxWidth="1200px" mt={4} textAlign="center">
+        <Typography variant="body"
+          fontSize="3rem"
+          fontWeight={500}
+          color={darkMode ? "#ffffff" : "#000000"}
+          display="block"   // Ensures it starts on a new line
+          gutterBottom      // Adds bottom margin for spacing
+          >
           Bamboo Stalks
         </Typography>
         <Grid container spacing={4} justifyContent="center">
