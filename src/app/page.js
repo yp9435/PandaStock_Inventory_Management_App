@@ -30,7 +30,7 @@ import {
   Create,        
   Book,           
   Apple,           
-  Kitchen,         
+  Dining,         
   Medication,
   Lightbulb,       
   CleaningServices,
@@ -41,16 +41,15 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 
 const itemIcons = {
-  Pens: Create,
-  Fruits: Apple,
-  Notebook: Book,
-  Meds: Medication,
-  Supplies: CleaningServices,
-  Kitchenware: Kitchen,
-  Bulbs: Lightbulb,
-  Plates: LocalDining,
-  Laundry: LocalLaundryService,
-  Laptop: Devices,
+  pens: Create,
+  fruits: Apple,
+  notebook: Book,
+  meds: Medication,
+  supplies: CleaningServices,
+  kitchenware: LocalDining,
+  bulbs: Lightbulb,
+  laundry: LocalLaundryService,
+  laptop: Devices,
   // Add more mappings as needed
 };
 
