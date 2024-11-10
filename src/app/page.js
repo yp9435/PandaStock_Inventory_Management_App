@@ -27,26 +27,30 @@ import Brightness7 from "@mui/icons-material/Brightness7";
 import AddCircleOutline from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutline from "@mui/icons-material/RemoveCircleOutline";
 import {
-  Bed,
-  Fastfood,
-  FitnessCenter,
-  Kitchen,
-  Laptop,
-  Medicine,
-  Office,
-  Pets,
-  School,
+  Create,        
+  Book,           
+  Apple,           
+  Kitchen,         
+  Medication,
+  Lightbulb,       
+  CleaningServices,
+  LocalDining,     
+  Devices,         
+  LocalLaundryService, 
 } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 
 const itemIcons = {
-  blankets: Bed,
-  food: Fastfood,
-  fitness: FitnessCenter,
-  kitchenware: Kitchen,
-  electronics: Laptop,
-  pet: Pets,
-  school: School,
+  Pens: Create,
+  Fruits: Apple,
+  Notebook: Book,
+  Meds: Medication,
+  Supplies: CleaningServices,
+  Kitchenware: Kitchen,
+  Bulbs: Lightbulb,
+  Plates: LocalDining,
+  Laundry: LocalLaundryService,
+  Laptop: Devices,
   // Add more mappings as needed
 };
 
@@ -73,7 +77,7 @@ export default function Home() {
   const [itemName, setItemName] = useState("");
   const [darkMode, setDarkMode] = useState(false);
 
-  const theme = useTheme(); // Get the current theme
+  const theme = useTheme(); 
 
   const updateInventory = async () => {
     const snapshot = query(collection(firestore, "inventory"));
@@ -197,9 +201,9 @@ export default function Home() {
           variant="body"
           fontSize="1.3rem"
           color={darkMode ? "#ffffff" : "#000000"}
-          display="block"   // Ensures it starts on a new line
+          display="block" 
         >
-          PandaStock is a panda-themed inventory management system built with Next.js, Material-UI, and Firebase. Our platform allows you to manage your inventory with ease and efficiency, providing a user-friendly experience with a touch of panda charm. Whether you’re managing your supplies or keeping track of your stock, PandaStock is here to help!
+          PandaStock is a cute, panda-themed personal inventory management system built with React.js, Material-UI, and Firebase. Our platform helps you effortlessly keep track of your belongings at home, combining functionality with a playful touch of panda charm. Whether you’re organizing household items, monitoring supplies, or keeping tabs on your favorite things, PandaNest is here to make home inventory management easy and enjoyable!
         </Typography>
       </Box>
 
@@ -266,8 +270,8 @@ export default function Home() {
           fontSize="3rem"
           fontWeight={500}
           color={darkMode ? "#ffffff" : "#000000"}
-          display="block"   // Ensures it starts on a new line
-          gutterBottom      // Adds bottom margin for spacing
+          display="block"  
+          gutterBottom      
           >
           Bamboo Stalks
         </Typography>
@@ -275,8 +279,7 @@ export default function Home() {
           {inventory.map(({ name, quantity }) => {
             // Determine icon to use
             const Icon = itemIcons[name.toLowerCase()] || defaultIcon;
-            const isPNG = typeof Icon === "string"; // Check if the icon is a PNG
-
+            const isPNG = typeof Icon === "string"; 
             return (
               <Grid item xs={2.4} key={name}>
                 <Box
